@@ -67,13 +67,27 @@ int main(int argc , char const *argv[]) {
     saisirCommande(tampon);
     send(fdSocket, tampon, strlen(tampon), 0);
 
-    //récup de la commande
+    //récup msg quantité
     nbRecu = recv(fdSocket, tampon, MAX_BUFFER, 0);
-    //affichage de la commande
+    //affichage du msg
     if (nbRecu > 0) {
         tampon[nbRecu] = 0;
-        printf("Votre commande : %s\n", tampon);
+        printf("%s\n", tampon);
     }
+
+    //Envoi de la quantité
+    fgets(tampon, MAX_BUFFER, stdin);
+    strtok(tampon, "\n");
+    send(fdSocket, tampon, strlen(tampon), 0);
+
+    //récup msg facture
+    nbRecu = recv(fdSocket, tampon, MAX_BUFFER, 0);
+    //affichage du msg
+    if (nbRecu > 0) {
+        tampon[nbRecu] = 0;
+        printf("%s\n", tampon);
+    }
+
 
     //fermeture
     close(fdSocket);

@@ -76,27 +76,27 @@ include CMakeFiles/Projet_c.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Projet_c.dir/flags.make
 
-CMakeFiles/Projet_c.dir/main.c.o: CMakeFiles/Projet_c.dir/flags.make
-CMakeFiles/Projet_c.dir/main.c.o: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/theo/CLionProjects/Projet_c/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Projet_c.dir/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Projet_c.dir/main.c.o -c /home/theo/CLionProjects/Projet_c/main.c
+CMakeFiles/Projet_c.dir/server.c.o: CMakeFiles/Projet_c.dir/flags.make
+CMakeFiles/Projet_c.dir/server.c.o: ../server.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/theo/CLionProjects/Projet_c/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Projet_c.dir/server.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Projet_c.dir/server.c.o -c /home/theo/CLionProjects/Projet_c/server.c
 
-CMakeFiles/Projet_c.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Projet_c.dir/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/theo/CLionProjects/Projet_c/main.c > CMakeFiles/Projet_c.dir/main.c.i
+CMakeFiles/Projet_c.dir/server.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Projet_c.dir/server.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/theo/CLionProjects/Projet_c/server.c > CMakeFiles/Projet_c.dir/server.c.i
 
-CMakeFiles/Projet_c.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Projet_c.dir/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/theo/CLionProjects/Projet_c/main.c -o CMakeFiles/Projet_c.dir/main.c.s
+CMakeFiles/Projet_c.dir/server.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Projet_c.dir/server.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/theo/CLionProjects/Projet_c/server.c -o CMakeFiles/Projet_c.dir/server.c.s
 
 # Object files for target Projet_c
 Projet_c_OBJECTS = \
-"CMakeFiles/Projet_c.dir/main.c.o"
+"CMakeFiles/Projet_c.dir/server.c.o"
 
 # External object files for target Projet_c
 Projet_c_EXTERNAL_OBJECTS =
 
-Projet_c: CMakeFiles/Projet_c.dir/main.c.o
+Projet_c: CMakeFiles/Projet_c.dir/server.c.o
 Projet_c: CMakeFiles/Projet_c.dir/build.make
 Projet_c: CMakeFiles/Projet_c.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/theo/CLionProjects/Projet_c/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable Projet_c"

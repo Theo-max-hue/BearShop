@@ -1,1 +1,1 @@
-/usr/bin/cc -g CMakeFiles/Projet_c.dir/main.c.o -o Projet_c 
+/usr/bin/cc -g CMakeFiles/Projet_c.dir/server.c.o -o Projet_c 

@@ -76,7 +76,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/theo/CLionProjects/Projet_c/main.c">
+		<Unit filename="/home/theo/CLionProjects/Projet_c/server.c">
 			<Option target="Projet_c"/>
 		</Unit>
 		<Unit filename="/home/theo/CLionProjects/Projet_c/CMakeLists.txt">
