@@ -7,22 +7,19 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/sem.h>
 #include <sys/shm.h>
-#include <wait.h>
 #include <sys/stat.h>
 #include <pthread.h>
+#include <stdbool.h>
 
-#define PORT 6001
+#define PORT 6000
 #define MAX_BUFFER 2000
 #define MAX_CLIENTS 3
-#define EXIT "exit"
-#define NB_ARTICLES 3
 #define PCB 10
 #define GO "Gros Ourson"
 #define OI "Ours Infirmière"
 #define OC "Ours Cupidon"
-#define MSG_STOCK "Le stock de cet article est actuellement épuisé, veuillez patienter le temps qu'un vendeur refasse le stock"
+#define MSG_STOCK "Le stock de cet article est actuellement épuisé, veuillez patienter le temps qu'un vendeur refasse le stock\n"
 
 typedef struct {
     int stockGrosOurson;
@@ -111,7 +108,7 @@ int main(int argc, char const *argv[]) {
             printf("erreur de accept\n");
             exit(EXIT_FAILURE);
         }
-
+        nbClients++;
         printf("Client connecté - %s:%d\n",
                inet_ntoa(coordonneesAppelant.sin_addr),
                ntohs(coordonneesAppelant.sin_port));
@@ -157,55 +154,104 @@ int main(int argc, char const *argv[]) {
                            "   (    (  (                  Ours Infirmière                  \n"
                            "    \\    )  )`                                    \n"
                            "     `--^`--^                                      \n"
-                           "   Ours Cupidon                            \n"
+                           "   Ours Cupidon                            \n\n"
 
             );
             send(fdSocketCommunication, tampon, strlen(tampon), 0);
 
-            //On récup ensuite la commande que le client rentre
+            bool commande = false;
 
-            nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
-            if (nbRecu > 0) {
-                tampon[nbRecu] = 0;
+            while (!commande) {
 
-                if (strcmp(tampon, GO) == 0) {
-                    strcpy(tampon, "Quelle Quantité ?");
-                    send(fdSocketCommunication, tampon, strlen(tampon), 0);
+                strcpy(tampon, "Quel Article souhaitez-vous commander ?");
+                send(fdSocketCommunication, tampon, strlen(tampon), 0);
 
-                    nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
+                //On récup ensuite la commande que le client rentre
+
+                nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
+                if (nbRecu > 0) {
                     tampon[nbRecu] = 0;
-                    int nbreAchats = atoi(tampon);
-
-                    if(magasin->stockGrosOurson<nbreAchats){
-                        send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
-                        break;
-                    } else{
-                        facture = magasin->prixGrosOurson * nbreAchats;
-                        int tva = facture * magasin->tvaGrosOurson;
-                        facture += tva;
-                        sprintf(tampon, "Merci pour votre commande !\nIl reste en stock : %d\nVotre facture est de : %d €\nAvec une TVA de : %d €",magasin->stockGrosOurson,facture,tva);
+                    if (strcmp(tampon, GO) == 0) {
+                        sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
+                                magasin->stockGrosOurson);
                         send(fdSocketCommunication, tampon, strlen(tampon), 0);
-                        break;}
-                } else if (strcmp(tampon, OI) == 0) {
-                    strcpy(tampon, "Ours Infirmière\nQuelle Quantité ?");
-                    send(fdSocketCommunication, tampon, strlen(tampon), 0);
-                } else if (strcmp(tampon, OC) == 0) {
-                    strcpy(tampon, "Ours Cupidon\nQuelle Quantité ?");
-                    send(fdSocketCommunication, tampon, strlen(tampon), 0);
-                } else {
-                    strcpy(tampon, "Vous n'avez pas rentré un nom d'article valide");
-                    send(fdSocketCommunication, tampon, strlen(tampon), 0);
+
+                        nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
+                        tampon[nbRecu] = 0;
+                        int nbreAchats = atoi(tampon);
+
+                        if (magasin->stockGrosOurson < nbreAchats) {
+                            send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
+                            commande = false;
+                        } else {
+                            facture = magasin->prixGrosOurson * nbreAchats;
+                            int tva = facture * magasin->tvaGrosOurson;
+                            facture += tva;
+                            sprintf(tampon,
+                                    "Merci pour votre commande !\nVotre facture est de : %d €\nAvec une TVA de : %d €",
+                                    facture, tva);
+                            send(fdSocketCommunication, tampon, strlen(tampon), 0);
+                            commande = true;
+                        }
+                    } else if (strcmp(tampon, OI) == 0) {
+                        sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
+                                magasin->stockOursInfirmiere);
+                        send(fdSocketCommunication, tampon, strlen(tampon), 0);
+
+                        nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
+                        tampon[nbRecu] = 0;
+                        int nbreAchats = atoi(tampon);
+
+                        if (magasin->stockOursInfirmiere < nbreAchats) {
+                            send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
+                            commande = false;
+                        } else {
+                            facture = magasin->prixOursInfirmiere * nbreAchats;
+                            int tva = facture * magasin->tvaOursInfirmiere;
+                            facture += tva;
+                            sprintf(tampon,
+                                    "Merci pour votre commande !\nVotre facture est de : %d €\nAvec une TVA de : %d €",
+                                    facture, tva);
+                            send(fdSocketCommunication, tampon, strlen(tampon), 0);
+                            commande = true;
+                        }
+                    } else if (strcmp(tampon, OC) == 0) {
+                        sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
+                                magasin->stockOursCupidon);
+                        send(fdSocketCommunication, tampon, strlen(tampon), 0);
+
+                        nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
+                        tampon[nbRecu] = 0;
+                        int nbreAchats = atoi(tampon);
+
+                        if (magasin->stockOursCupidon < nbreAchats) {
+                            send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
+                            commande = false;
+                        } else {
+                            facture = magasin->prixOursCupidon * nbreAchats;
+                            int tva = facture * magasin->tvaOursCupidon;
+                            facture += tva;
+                            sprintf(tampon,
+                                    "Merci pour votre commande !\nVotre facture est de : %d €\nAvec une TVA de : %d €",
+                                    facture, tva);
+                            send(fdSocketCommunication, tampon, strlen(tampon), 0);
+                            commande = true;
+                        }
+                    } else {
+                        strcpy(tampon, "Vous n'avez pas rentré un nom d'article valide\n");
+                        send(fdSocketCommunication, tampon, strlen(tampon), 0);
+                    }
                 }
-
             }
-
+            nbClients--;
             printf("Déconnexion du client %s:%d\n",
                    inet_ntoa(coordonneesAppelant.sin_addr),
                    ntohs(coordonneesAppelant.sin_port));
             fermerMemoirePartagee();
+            pthread_cancel(vendeur);
             exit(EXIT_SUCCESS);
             }
-        nbClients++;
+
         }
 
 
@@ -233,13 +279,10 @@ void fermerMemoirePartagee() {
 
 void *fonctionVendeur(void *arg) {
 
-    while (1) { //condition pour sortir - client ne veut plus ach
+    while (1) {
         sleep(10);
         magasin->stockGrosOurson += PCB;
         magasin->stockOursCupidon += PCB;
         magasin->stockOursInfirmiere += PCB;
-        printf("Article GrosOurson: ajout 100 unités. Total = %d\n", magasin->stockGrosOurson);
     }
-
-    pthread_exit(NULL);
 }
