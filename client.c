@@ -20,7 +20,6 @@ int testQuitter(char tampon[]) {
     return strcmp(tampon, EXIT) == 0;
 }
 
-
 int main(int argc , char const *argv[]) {
     int fdSocket;
     int nbRecu;
@@ -50,7 +49,6 @@ int main(int argc , char const *argv[]) {
         printf("connexion impossible\n");
         exit(EXIT_FAILURE);
     }
-
     printf("connexion ok\n");
 
     //récupération de l'affichage de l'acceuil
@@ -60,7 +58,6 @@ int main(int argc , char const *argv[]) {
         tampon[nbRecu] = 0;
         printf("%s\n", tampon);
     }
-
 
     //envoi de la commande au serveur
     saisirCommande(tampon);
@@ -74,7 +71,7 @@ int main(int argc , char const *argv[]) {
         printf("%s\n", tampon);
     }
 
-    while(1){
+    while(1){ //Tant que la commande n'est pas finie on boucle, le client doit taper exit pour quitter
 
         fgets(tampon, MAX_BUFFER, stdin);
         strtok(tampon, "\n");
@@ -92,9 +89,6 @@ int main(int argc , char const *argv[]) {
             printf("%s\n", tampon);
         }
     }
-
-
-
     //fermeture
     close(fdSocket);
     return EXIT_SUCCESS;

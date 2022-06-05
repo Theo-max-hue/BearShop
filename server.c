@@ -56,7 +56,6 @@ void initialiserMagasin(){
 
 int main(int argc, char const *argv[]) {
     ouvrirMemoirePartagee();
-    //partie client/vendeur
     initialiserMagasin();
 
     int fdSocketAttente;
@@ -163,29 +162,33 @@ int main(int argc, char const *argv[]) {
 
             bool commande = false;
 
-            while (!commande) {
+            while (!commande) { //Tant que la commande n'est pas finie, on boucle
 
+                //Demande au client ce qu'il souhaite commander
                 strcpy(tampon, "Quel Article souhaitez-vous commander ?");
                 send(fdSocketCommunication, tampon, strlen(tampon), 0);
 
                 //On récup ensuite la commande que le client rentre
-
                 nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
                 if (nbRecu > 0) {
                     tampon[nbRecu] = 0;
-                    if (strcmp(tampon, GO) == 0) {
+                    if (strcmp(tampon, GO) == 0) { //Si commande Gros Ourson
                         sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
                                 magasin->stockGrosOurson);
                         send(fdSocketCommunication, tampon, strlen(tampon), 0);
 
+                        //récup quantité que le client demande
                         nbRecu = recv(fdSocketCommunication, tampon, MAX_BUFFER, 0);
                         tampon[nbRecu] = 0;
                         int nbreAchats = atoi(tampon);
 
+                        //Test si qté demandée est dispo en stock
                         if (magasin->stockGrosOurson < nbreAchats) {
                             send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
                             commande = false;
                         } else {
+                            magasin->stockGrosOurson -= nbreAchats;
+                            //Calcul et envoi de la facture au client
                             facture = magasin->prixGrosOurson * nbreAchats;
                             int tva = facture * magasin->tvaGrosOurson;
                             facture += tva;
@@ -195,7 +198,7 @@ int main(int argc, char const *argv[]) {
                             send(fdSocketCommunication, tampon, strlen(tampon), 0);
                             commande = true;
                         }
-                    } else if (strcmp(tampon, OI) == 0) {
+                    } else if (strcmp(tampon, OI) == 0) { //Si commande Ours Infirmière
                         sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
                                 magasin->stockOursInfirmiere);
                         send(fdSocketCommunication, tampon, strlen(tampon), 0);
@@ -208,6 +211,7 @@ int main(int argc, char const *argv[]) {
                             send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
                             commande = false;
                         } else {
+                            magasin->stockOursInfirmiere -= nbreAchats;
                             facture = magasin->prixOursInfirmiere * nbreAchats;
                             int tva = facture * magasin->tvaOursInfirmiere;
                             facture += tva;
@@ -217,7 +221,7 @@ int main(int argc, char const *argv[]) {
                             send(fdSocketCommunication, tampon, strlen(tampon), 0);
                             commande = true;
                         }
-                    } else if (strcmp(tampon, OC) == 0) {
+                    } else if (strcmp(tampon, OC) == 0) { //Si commande Ours Cupidon
                         sprintf(tampon, "Il reste en stock : %d articles\nQuelle Quantité souhaitez-vous commander ?",
                                 magasin->stockOursCupidon);
                         send(fdSocketCommunication, tampon, strlen(tampon), 0);
@@ -230,6 +234,7 @@ int main(int argc, char const *argv[]) {
                             send(fdSocketCommunication, MSG_STOCK, strlen(MSG_STOCK), 0);
                             commande = false;
                         } else {
+                            magasin->stockOursCupidon -= nbreAchats;
                             facture = magasin->prixOursCupidon * nbreAchats;
                             int tva = facture * magasin->tvaOursCupidon;
                             facture += tva;
@@ -253,10 +258,7 @@ int main(int argc, char const *argv[]) {
             pthread_cancel(vendeur);
             exit(EXIT_SUCCESS);
             }
-
         }
-
-
     close(fdSocketCommunication);
     close(fdSocketAttente);
 
