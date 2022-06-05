@@ -15,7 +15,9 @@
 #define PORT 6000
 #define MAX_BUFFER 2000
 #define MAX_CLIENTS 3
-#define PCB 10
+#define PCB_GO 10
+#define PCB_OI 15
+#define PCB_OC 20
 #define GO "Gros Ourson"
 #define OI "Ours Infirmière"
 #define OC "Ours Cupidon"
@@ -281,8 +283,8 @@ void *fonctionVendeur(void *arg) {
 
     while (1) {
         sleep(10);
-        magasin->stockGrosOurson += PCB;
-        magasin->stockOursCupidon += PCB;
-        magasin->stockOursInfirmiere += PCB;
+        magasin->stockGrosOurson += PCB_GO;
+        magasin->stockOursCupidon += PCB_OC;
+        magasin->stockOursInfirmiere += PCB_OI;
     }
 }

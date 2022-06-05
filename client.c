@@ -6,10 +6,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #define PORT 6000
 #define MAX_BUFFER 2000
-#define QUIT "quitter"
 
 const char *EXIT = "exit";
 
@@ -77,19 +77,20 @@ int main(int argc , char const *argv[]) {
     }
 
     while(1){
-    //Envoi de la quantité
+        //Envoi de la quantité
 
-    fgets(tampon, MAX_BUFFER, stdin);
-    strtok(tampon, "\n");
-    send(fdSocket, tampon, strlen(tampon), 0);
+        fgets(tampon, MAX_BUFFER, stdin);
+        strtok(tampon, "\n");
+        send(fdSocket, tampon, strlen(tampon), 0);
 
-    //récup msg facture
-    nbRecu = recv(fdSocket, tampon, MAX_BUFFER, 0);
-    //affichage du msg
-    if (nbRecu > 0) {
-        tampon[nbRecu] = 0;
-        printf("%s\n", tampon);
-    }
+
+        //récup msg facture
+        nbRecu = recv(fdSocket, tampon, MAX_BUFFER, 0);
+        //affichage du msg
+        if (nbRecu > 0) {
+            tampon[nbRecu] = 0;
+            printf("%s\n", tampon);
+        }
     }
 
 
