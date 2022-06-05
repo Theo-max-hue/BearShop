@@ -3,10 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <stdbool.h>
 
 #define PORT 6000
 #define MAX_BUFFER 2000
@@ -77,14 +75,16 @@ int main(int argc , char const *argv[]) {
     }
 
     while(1){
-        //Envoi de la quantité
 
         fgets(tampon, MAX_BUFFER, stdin);
         strtok(tampon, "\n");
         send(fdSocket, tampon, strlen(tampon), 0);
+        if (testQuitter(tampon)) {
+            send(fdSocket, tampon, strlen(tampon), 0);
+            break; // on quitte la boucle
+        }
 
-
-        //récup msg facture
+        //récup msg
         nbRecu = recv(fdSocket, tampon, MAX_BUFFER, 0);
         //affichage du msg
         if (nbRecu > 0) {
